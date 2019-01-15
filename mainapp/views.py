@@ -31,6 +31,8 @@ def homePage(request):
             return HttpResponseRedirect(reverse("labtech:lab-test", args=("new",)))
         if designation == "pharmacist":
             return HttpResponseRedirect(reverse("pharmacy:prescription", args=("new",)))
+        if designation == "cashier":
+            return HttpResponseRedirect(reverse("cashier:invoice"))
 
     template_name = "homepage.html"
     if request.method == "POST":

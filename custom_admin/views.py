@@ -1072,7 +1072,7 @@ def invoice(request):
         response_redirect_url = "custom-admin"
         title = "Admin | Invoice"
     elif designation == "cashier":
-        base_template = "cashier"
+        base_template = "cashier-base.html"
         response_redirect_url = "cashier"
         title = "Cashier | Invoice"
     else:
@@ -1115,7 +1115,7 @@ def newInvoice(request, patient_id):
         response_redirect_url = "custom-admin"
         title = "Admin | New Invoice"
     elif designation == "cashier":
-        base_template = "cashier"
+        base_template = "cashier-base.html"
         response_redirect_url = "cashier"
         title = "Cashier | New Invoice"
     else:

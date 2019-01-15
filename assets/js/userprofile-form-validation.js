@@ -16,7 +16,7 @@ $(function(){
                 required : true,
                 nowhitespace : true,
                 remote: {
-                    url: window.location.protocol+"//"+window.location.hostname+"/verify-username/",
+                    url: window.location.protocol+"//"+window.location.hostname+":"+window.location.port+"/verify-username/",
                     type: "post",
                     data: {
                         username: function() {
