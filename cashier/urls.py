@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from custom_admin.views import ( 
                     Patients, addPatient, editPatient,
-                    invoice, newInvoice,
+                    invoice, newInvoice, generateInvoice,
                     invoiceHistory, invoiceHistorySearch,
 )
 from mainapp.views import changePassword
@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^invoice/$', invoice, name="invoice"),
     url(r'^new-invoice/(?P<patient_id>[A-Z0-9]*)/$', newInvoice, name="new-invoice"),
     url(r'^search-invoice-history/$', invoiceHistorySearch, name="search-invoice-history"),
-    url(r'^invoice-history/(?P<patient_id>[A-Z0-9]*)/$', invoiceHistory, name="invoice-history"),
+    url(r'^generate-invoice/(?P<patient_id>[A-Z0-9]*)/$', generateInvoice, name="generate-invoice"),
+    url(r'^invoice-history/(?P<transaction_id>[0-9]*)/$', invoiceHistory, name="invoice-history"),
     url(r'^change-password/$', changePassword, name="change-password"),
 ]
