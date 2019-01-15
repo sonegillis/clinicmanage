@@ -1,0 +1,298 @@
+{% extends base_template %}
+{% load calculate_age %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/animate.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'css/daterangepicker.css' %}" rel="stylesheet" media="all">
+<link rel="stylesheet" type="text/css" href="{% static  'css/jquery-ui-1.8.17.custom.css' %}">
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main2.css' %}"> -->
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Medical History</h2>
+                            <p>Select range for which you want to generate medical history </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="bsc-tbl">
+                    <table class="table table-sc-ex">
+                        <tbody>
+                            <thead>
+                                <th>Dimebook ID</th>
+                                <th>CNI</th>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Diabetes</th>
+                                <th>Immuno Depressants</th>
+                                <th>Special Cases</th>
+                                <th>Age</th>
+                                <th>Guardian Name</th>
+                                <th>Guardian Contact</th>
+                                <th>Registered At</th>
+                            </thead>
+                            <tr>
+                                <td>{{patient.patient_id}}</td>
+                                <td>{{patient.cni}}</td>
+                                <td>{{patient.name}}</td>
+                                <td>{{patient.bloodgroup}}</td>
+                                <td>{{patient.diabetes}}</td>
+                                <td>{{patient.immuno_depressants}}</td>
+                                <td>{{patient.special_cases}}</td>
+                                <td>{{patient.birth_date}}</td>
+                                <td>{{patient.guardian_name}}</td>
+                                <td>{{patient.guardian_tel}}</td>
+                                <td>{{patient.client.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span></span> <i class="fa fa-caret-down"></i>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2s">
+                    {% csrf_token %}
+                    <div class="breadcomb-icon"><i id="download" style="cursor:pointer" class="fa fa-download"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <iframe frameborder="0" width="500" height="400"></iframe>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.8.17.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jspdf.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.5/jspdf.plugin.autotable.js"></script>
+
+    <script type="text/javascript" src="{% static 'js/addimage.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/standard_fonts_metrics.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/split_text_to_size.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/from_html.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/basic.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/FileSaver.js' %}"></script>
+    <script>
+        $(function() {
+            $("#accordion-basic, #accordion-text, #accordion-graphic").accordion({
+                autoHeight: false,
+                navigation: true
+            });
+            $( "#tabs" ).tabs();
+            $(".button").button();
+        });
+    </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var start, start_date;
+            var end, end_date;
+            var logo = "{{client.logo.url}}";
+            var patient_name = "{{patient.name}}";
+            var doc = new jsPDF('p', 'pt', 'a4');
+
+            doc.setFont('times')
+            doc.setFontSize(10)
+            doc.text(50, 160, 'DIMEBOOK.ORG')
+            doc.text(50, 180, 'HEALTH FOR ALL')
+            doc.text(50, 200, '671906987')
+
+            doc.text(450, 160, "{{userprofile.client.name | upper}}")
+            doc.text(450, 180, "{{userprofile.client.address | upper}}")
+            doc.text(450, 200, "{{userprofile.client.email}}")
+            doc.text(450, 220, "{{userprofile.client.tel | upper}}")
+
+            doc.setFontType('bolditalic')
+            doc.text(250, 240, 'MEDICAL RECORD FOR:')
+
+            doc.setDrawColor(0,194,146);
+            doc.rect(50, 260, 500, 150);
+
+            // name design
+            doc.setFontType('normal');
+            doc.text(55, 280, "NAME");
+            doc.text(89, 290, "............................................................................................................")
+            
+            // birth date design
+            doc.text(362, 280, "BIRTH DATE");
+            doc.text(426, 290, "....................................")
+
+            // dimebook number design
+            doc.text(55, 308, "DIMEBOOK ID");
+            doc.text(130, 318, "....................................")
+
+            // cni number design
+            doc.text(302, 308, "CNI");
+            doc.text(325, 318, "....................................")
+
+            // telephone number design
+            doc.text(55, 336, "TELEPHONE");
+            doc.text(117, 346, "....................................")
+
+            // address design
+            doc.text(252, 336, "ADDRESS");
+            doc.text(305, 346, "......................................................................................");
+
+            // email design
+            doc.text(55, 364, "EMAIL");
+            doc.text(90, 374, "........................................................................................................");
+
+            // guardian name design
+            doc.text(55, 392, "GUARDIAN NAME");
+            doc.text(145, 402, ".................................................................................................")
+            
+            // guardian telephone design
+            doc.text(390, 392, "TELEPHONE");
+            doc.text(455, 402, "......................................");
+
+            /* FILL patient information */
+            // name
+            doc.setFontType('italic');
+            doc.setFontSize(12);
+            doc.text(89, 280, "{{patient.name}}");
+            // birth date
+            doc.text(426, 280, "{{patient.birth_date}}");
+            // dimebook ID
+            doc.text(130, 308, "{{patient.patient_id}}");
+            // cni number
+            doc.text(325, 308, "{{patient.cni}}");
+            // telephone number
+            doc.text(117, 336, "{{patient.tel}}");
+            // address
+            doc.text(305, 336, "{{patient.address}}");
+            // email
+            doc.text(90, 364, "{{patient.email}}");
+            // guardian name
+            doc.text(145, 392, "{{patient.guardian_name}}");
+            // guardian telephone
+            doc.text(455, 392, "{{patient.guardian_tel}}");
+
+            var getImageFromUrl = function(callback) {
+                var img1 = new Image();
+                var img2 = new Image();
+                img1.onError = function() {
+                    alert('Cannot load image');
+                };
+                img1.onload = function() {
+                    callback(50, 50, img1, "dimebook");
+                };
+                img2.onError = function() {
+                    alert('Cannot load image');
+                };
+                img2.onload = function() {
+                    callback(500, 50, img2, "pesma");
+                };
+
+                img1.src = '/static/img/dimebook-logo.jpg';
+                img2.src = logo;
+            }
+
+            var createPDF = function(x, y, imgData, name) {
+                var width = doc.internal.pageSize.width;    
+                var height = doc.internal.pageSize.height;
+                var options = {
+                    pagesplit: true
+                };
+  
+                doc.addImage(imgData, 'JPEG', x, y, 80, 80, name);
+
+                var string = doc.output('datauristring');
+                $('iframe').attr('src', string);
+            }
+
+            $(function() {
+                start = moment().subtract(29, 'days');
+                end = moment();
+                function cb(start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                    start_date = start; end_date = end;
+                }
+                $('#reportrange').daterangepicker({
+                    startDate: start,
+                    endDate: end,
+                    ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    }
+                }, cb);
+                cb(start, end);
+                $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+                    //do something, like clearing an input
+                    $.ajax({
+                        type            :  'POST',
+                        url             :  window.location.href,
+                        dataType        : 'json',
+                        data            :  {
+                                            "start" : start_date.format('MMMM D, YYYY'),
+                                            "end" : end_date.format('MMMM D, YYYY'),
+                                            csrfmiddlewaretoken : $("input[name=csrfmiddlewaretoken]").val()
+                        },
+                        success         :  function(data, textStatus, jqXHR){
+                                            var columns = data.columns;
+                                            var rows = data.rows;
+                                            doc.autoTable(columns, rows,{
+                                                "startY": 450,
+                                                styles: {
+                                                    overflow: 'linebreak',
+                                                    fontSize: 10,
+                                                    tableWidth: 'auto',
+                                                    columnWidth: 'auto',
+                                                },
+                                                columnStyles: {
+                                                    overflow : 'linebreak',
+                                                    fontSize : 5
+                                                },
+                                            });
+                                            var string = doc.output('datauristring');
+                                            $('iframe').attr('src', string);
+                        },
+                    });
+                });
+            });
+            $("#download").on("click", function(){
+                var d = new Date();
+                var month = d.getMonth()+1;
+                var day = d.getDate();
+
+                var output = d.getFullYear() + '-' +
+                    ((''+month).length<2 ? '0' : '') + month + '-' +
+                    ((''+day).length<2 ? '0' : '') + day;
+
+                fileName = patient_name + "(" + output + ").pdf";
+                doc.save(fileName);
+            });
+            getImageFromUrl(createPDF);
+
+            var string = doc.output('datauristring');
+            $('iframe').attr('src', string);
+        });
+    </script>
+{% endblock %}

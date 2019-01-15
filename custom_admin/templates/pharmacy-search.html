@@ -1,0 +1,83 @@
+{% extends base_template %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <form id="search">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group ic-cmp-int">
+                            <div class="form-ic-cmp">
+                                
+                            </div>
+                            <div class="nk-int-st">
+                                <input id="patient_id" name="patient_id" type="text" class="form-control" placeholder="DimeBook ID or CNI">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                            <div class="nk-int-st">
+                                {% csrf_token %}
+                                <button class="btn btn-success notika-btn-success">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    
+    <script>
+        $(function(){
+            $("#patient_id").focus();
+            $("#search").validate({
+                debug: true,
+                rules: {
+                    patient_id : "required",
+                },
+                submitHandler: function(form){
+                    form_data = $("#search").serialize();
+                    $.ajax({
+                        type : "POST",
+                        url : window.location.href,
+                        data : form_data,
+                        dataType : 'json',
+                        success : function(response){
+                            window.location.replace("/"+response.response_redirect_url+"/give-drug/"+response.patient_id+"/");                  
+                        },
+                        error: function(xhr, status, error){
+                            swal({
+                                title: "This Dimebook ID or CNI is not registered in the Database",
+                                text: xhr.responseText,
+                                type: "error",
+                                closeOnClickOutside: false,
+                                closeOnEsc: false,
+                                allowOutsideClick: false,
+                                }).then(function() {
+                                // Redirect the user
+                                location.reload();
+                            });
+                        },               
+                    //Your code for AJAX Ends
+                    }); 
+                    return false;
+                },    
+            });
+        });
+    </script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

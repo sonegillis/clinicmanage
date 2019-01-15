@@ -1,0 +1,130 @@
+{% extends 'superadmin-base.html' %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Eidt Administrator</h2>
+                            <p>Administrators to run the various Medical Milieus such as Clinics and Hospitals Information should be editted here </p>
+                        </div>
+                        <form id="userprofile-form" method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="first_name" type="text" class="form-control" value="{{admin.user.first_name}}">
+                                            <label class="nk-label">First Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="last_name" type="text" class="form-control" value="{{admin.user.last_name}}">
+                                            <label class="nk-label">Last Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-phone"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="tel" type="text" class="form-control" value="{{admin.tel}}">
+                                            <label class="nk-label">Contact Number</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-mail"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="email" type="text" class="form-control" value="{{admin.user.email}}">
+                                            <label class="nk-label">Email</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-picture"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            {% if admin.profile_pic %}
+                                                <input name="profile_pic" type="file" accept="image/*" value="{{admin.profile_pic.url}}">
+                                            {% else %}
+                                                <input name="profile_pic" type="file" accept="image/*">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <select name="client" class="form-control" id="sel1">
+                                                <option name="client" value=""></option>
+                                                {% for client in clients %}
+                                                    {% if admin.client.id == client.id %}
+                                                        <option name="client" value="{{client.id}}" selected>{{client.name}}</option>
+                                                    {% else %}
+                                                        <option name="client" value="{{client.id}}">{{client.name}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="nk-int-st">
+                                            {% csrf_token %}
+                                            <button id="add-worker" type="submit" class="btn btn-info notika-btn-info">Edit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    <script src="{% static 'js/userprofile-form-validation.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

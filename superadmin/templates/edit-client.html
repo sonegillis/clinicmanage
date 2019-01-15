@@ -1,0 +1,101 @@
+{% extends 'superadmin-base.html' %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Edit Client</h2>
+                            <p>Medical Milieus such as Clinics and Hospitals Information should be editted here </p>
+                        </div>
+                        <p></p>
+                        <form method="POST" id="client-form" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="client_name" type="text" class="form-control" value="{{client.name}}">
+                                            <label class="nk-label">Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-mail"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="email" type="text" class="form-control" value="{{client.email}}">
+                                            <label class="nk-label">Email Address</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-phone"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="tel" type="text" class="form-control" value="{{client.tel}}">
+                                            <label class="nk-label">Contact Number</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="address" type="text" class="form-control" value="{{client.address}}">
+                                            <label class="nk-label">Address</label>
+                                        </div>
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-picture"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="clinic_logo" type="file" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    {% csrf_token %}
+                                    <button id="add-client" type="submit" class="btn btn-info notika-btn-info">Edit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    <script src="{% static 'js/client-form-validation.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

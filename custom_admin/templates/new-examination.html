@@ -1,0 +1,236 @@
+{% extends base_template %}
+{% load calculate_age %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="bsc-tbl">
+                    <table class="table table-sc-ex">
+                        <tbody>
+                            <thead>
+                                <th>Dimebook ID</th>
+                                <th>CNI</th>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Diabetes</th>
+                                <th>Immuno Depressants</th>
+                                <th>Special Cases</th>
+                                <th>Age</th>
+                                <th>Guardian Name</th>
+                                <th>Guardian Contact</th>
+                                <th>Registered At</th>
+                            </thead>
+                            <tr>
+                                <td>{{patient.patient_id}}</td>
+                                <td>{{patient.cni}}</td>
+                                <td>{{patient.name}}</td>
+                                <td>{{patient.bloodgroup}}</td>
+                                <td>{{patient.diabetes}}</td>
+                                <td>{{patient.immuno_depressants}}</td>
+                                <td>{{patient.special_cases}}</td>
+                                <td>{{patient.birth_date|age}}</td>
+                                <td>{{patient.guardian_name}}</td>
+                                <td>{{patient.guardian_tel}}</td>
+                                <td>{{patient.client.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-element-area">
+        <div class="container">
+            <form id="new-examination-form" method="POST">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Parameters</h2>
+                                <!-- <p>Form control which supports multiple lines of text. Change 'rows' attribute as necessary.</p> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-example-int">
+                                        <div class="form-group">
+                                            <label>Weight / Kg</label>
+                                            <div class="nk-int-st">
+                                                <input id="weight" name="weight" type="number" class="form-control input-sm" placeholder="Weight">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-example-int">
+                                        <div class="form-group">
+                                            <label>Temperature / C</label>
+                                            <div class="nk-int-st">
+                                                <input id="temperature" name="temperature" type="number" step="0.01" class="form-control input-sm" placeholder="Temperature">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-example-int">
+                                        <div class="form-group">
+                                            <label>Blood Pressure / mmHg</label>
+                                            <div class="nk-int-st">
+                                                <input id="blood-pressure" name="blood-pressure" type="text" class="form-control input-sm" placeholder="Blood Pressure">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Symptoms</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea name="symptoms" class="form-control auto-size" rows="2" placeholder="Symptoms..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Vaccines</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea name="vaccines" class="form-control auto-size" rows="2" placeholder="Vaccines..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Allergies</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea name="allergies" class="form-control auto-size" rows="2" placeholder="Allergies..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Diagnoses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea name="diagnoses" class="form-control auto-size" rows="2" placeholder="Diagnoses..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Notes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea name="notes" class="form-control auto-size" rows="2" placeholder="Notes..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="contact-btn">
+                                        {% csrf_token %}
+                                        <button id="save" type="submit" class="button btn">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script>
+    $(function(){
+        $("#new-examination-form").validate({
+            debug: true,
+            rules: {
+                // name : "required",
+                // birth_date : "required",
+                // gender : "required",
+                // tel: "required",
+                // address: "required"
+            },
+            submitHandler: function(form){
+                $("#save").prop('disabled', true);
+                form_data = $("#new-examination-form").serialize();
+                $.ajax({
+                    type : "POST",
+                    url : window.location.href,
+                    data : form_data,
+                    dataType : 'text',
+                    success : function(response){
+                        swal({
+                                title: "Successfully submitted Examination",
+                                text: "Patient ID: {{patient.patient_id}}",
+                                type: "success",
+                                closeOnClickOutside: false,
+                                closeOnEsc: false,
+                                allowOutsideClick: false,
+                                }).then(function() {
+                                        window.location.href = "/"+response+"/examination/new/";
+                            });
+                    },
+                    error: function(response){
+                        alert("failure");
+                        //$("#result").html('There is error while submit');
+                    },               
+                //Your code for AJAX Ends
+                }); 
+                return false;
+            },    
+        });
+    });
+</script>
+<script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

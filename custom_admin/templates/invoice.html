@@ -1,0 +1,379 @@
+{% extends base_template %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <form id="invoice">
+                <div id="prescription-div" class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Drugs</h2>
+                            </div>
+                            {% for detail in prescription_detail %}
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                        <div class="floating-numner">
+                                            <p>{{detail.drug}}({{detail.dosage}})|{{detail.drug_alternative}}({{detail.dosage_alternative}})</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <div class="nk-int-st">
+                                            <input onkeyup="drugQuantityChanged('{{detail.id}}');calculateTotal()" name="{{detail.drug}}({{detail.dosage}})|{{detail.drug_alternative}}({{detail.dosage_alternative}})" id="{{detail.id}}_quantity" type="number" class="form-control" placeholder="Quantity">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <div class="nk-int-st">
+                                            <input onkeyup="drugUnitPriceChanged('{{detail.id}}');calculateTotal();" id="{{detail.id}}_unitprice" type="number" class="form-control" placeholder="Unit Price">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <div class="nk-int-st">
+                                            <input custom_name="total" disabled id="{{detail.id}}_total" type="number" class="form-control" placeholder="Total">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div id="labtest-div" class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Laboratory Test</h2>
+                            </div>
+                            {% for detail in labtest_detail %}
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="floating-numner">
+                                            <p>{{detail.labtest_name}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                        <div class="nk-int-st">
+                                            <input custom_name="total" name="{{detail.labtest_name}}" onkeyup="calculateTotal();" id="{{detail.id}}_labtestprice" type="number" class="form-control" placeholder="Price">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div id="hospitalisation-div" class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Hospitalisation</h2>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <div class="nk-int-st">
+                                        <input onkeyup="hospDaysChanged();calculateTotal();" id="hosp_days" type="number" class="form-control" placeholder="Days">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <div class="nk-int-st">
+                                        <input onkeyup="hospUnitPriceChanged();calculateTotal();" id="hosp_unitprice" type="number" class="form-control" placeholder="Unit Price">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <div class="nk-int-st">
+                                        <input custom_name="total" id="hosp_total" disabled type="number" class="form-control" placeholder="Total">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-element-list mg-t-30">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <div class="nk-int-st">
+                                        <input onkeyup="finalAmountChanged()" id="final_amount" type="number" class="form-control" placeholder="Final Amount" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <div class="nk-int-st">
+                                        <input onkeyup="givenAmountChanged();" id="given_amount" type="number" class="form-control" placeholder="Given Amount" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div class="contact-btn">
+                            {% csrf_token %}
+                            <button onclick="generateInvoice()" id="generate-invoice" type="button" class="button btn">Generate Invoice</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-element-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h6>TOTAL /FCFA</h6>
+                                    </div>
+                                    <div class="basic-tb-hd">
+                                        <h4 id="total">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-element-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h6>FINAL AMOUNT /FCFA</h6>
+                                    </div>
+                                    <div class="basic-tb-hd">
+                                        <h4 id="m_final_amount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-element-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h6>DISCOUNT %</h6>
+                                    </div>
+                                    <div class="basic-tb-hd">
+                                        <h4 id="discount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-element-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h6>GIVEN AMOUNT /FCFA</h6>
+                                    </div>
+                                    <div class="basic-tb-hd">
+                                        <h4 id="m_given_amount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-element-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h6>BALANCE /FCFA</h6>
+                                    </div>
+                                    <div class="basic-tb-hd">
+                                        <h4 id="balance">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    
+    <script>
+        var invoice_data = {
+            'prescription' : [],
+            'labtest' : [],
+            'hospitalisation' : []
+        }
+        var patient_id = "{{patient_id}}"
+        var prescription_id = "{{prescription.id}}"
+        var labtest_id = "{{labtest.id}}"
+
+        function drugQuantityChanged(id){
+            var drug_quantity = $("#"+id+"_quantity").val();
+            var drug_unit_price = $("#"+id+"_unitprice").val();
+            if (drug_unit_price) {
+                var total = drug_quantity * drug_unit_price;
+                $("#"+id+"_total").val(total);
+            }
+            else {
+                $("#"+id+"_unitprice").val(0);
+                $("#"+id+"_total").val(0);
+            }
+        }
+
+        function drugUnitPriceChanged(id){
+            var drug_quantity = $("#"+id+"_quantity").val();
+            var drug_unit_price = $("#"+id+"_unitprice").val();
+            if (drug_quantity) {
+                var total = drug_quantity * drug_unit_price;
+                $("#"+id+"_total").val(total);
+            }
+            else {
+                $("#"+id+"_quantity").val(0);
+                $("#"+id+"_total").val(0);
+            }
+        }
+
+        function hospDaysChanged(){
+            var hosp_days = $("#hosp_days").val();
+            var hosp_unitprice = $("#hosp_unitprice").val();
+            if (hosp_unitprice) {
+                var total = hosp_days * hosp_unitprice;
+                $("#hosp_total").val(total);
+            }
+            else {
+                $("#hosp_unitprice").val(0);
+                $("#hosp_total").val(0);
+            }
+        }
+
+        function hospUnitPriceChanged() {
+            var hosp_days = $("#hosp_days").val();
+            var hosp_unitprice = $("#hosp_unitprice").val();
+            if (hosp_days) {
+                var total = hosp_days * hosp_unitprice;
+                $("#hosp_total").val(total);
+            }
+            else {
+                $("#hosp_days").val(0);
+                $("#hosp_total").val(0);
+            }
+        }
+        
+        function calculateTotal(){
+            arr = $("#invoice input");
+            total = 0;
+            for (i=0; i<arr.length; i++) {
+                if ($(arr[i]).attr('custom_name') == 'total' && $(arr[i]).val()) {
+                    total += parseInt($(arr[i]).val());
+                }
+            }
+            $("#total").html(total);
+            finalAmountChanged();
+            givenAmountChanged();
+        }
+
+        function generateInvoice(){
+            var arr = $("#prescription-div input");
+            var prescription = ""
+            for (i = 1; i <= arr.length; i++) {
+                prescription += $(arr[i-1]).val();
+                if (i%3 == 0) {
+                    prescription += ("/" + $(arr[i-3]).attr('name'));
+                    prescription += "@";
+                }
+                prescription += "/";
+            }
+            invoice_data['prescription'] = prescription;
+
+            arr = $("#labtest-div input");
+            labtest = ""
+            for (i = 0; i < arr.length; i++) {
+                labtest += $(arr[i]).val();
+                labtest += ("/" + $(arr[i]).attr('name'));
+                labtest += "@"
+            }
+            invoice_data['labtest'] = labtest;
+            
+            invoice_data['hospitalisation'] = $("#hosp_days").val() + '@' + $("#hosp_unitprice").val() + '@' + $("#hosp_total").val();
+            invoice_data['total'] = $("#total").html();
+            invoice_data['final_amount'] = $("#m_final_amount").html();
+            invoice_data['given_amount'] = $("#m_given_amount").html();
+            invoice_data['balance'] = $("#balance").html();
+            invoice_data['discount'] = $("#discount").html();
+            invoice_data['labtest_id'] = labtest_id;
+            invoice_data['prescription_id'] = prescription_id;
+            invoice_data = JSON.stringify(invoice_data);
+            
+            // post the json data to the server and use the invoice response to display on the page for printing
+
+            url = "/custom-admin/generate-invoice/"+patient_id+"/";
+            $.post(url, {'csrfmiddlewaretoken' : '{{csrf_token}}', 'invoice_data' : invoice_data},
+                function(data, status){
+                    invoice_data = {};
+                    var printcontents = data;
+                    //var originalcontents = document.body.innerHTML;
+                    document.body.innerHTML = printcontents;
+                    (function() {
+                        var beforePrint = function() {
+                            window.location.reload();
+                        };
+                        var afterPrint = function() {
+                        };
+                    
+                        if (window.matchMedia) {
+                            var mediaQueryList = window.matchMedia('print');
+                            mediaQueryList.addListener(function(mql) {
+                                if (mql.matches) {
+                                    beforePrint();
+                                } else {
+                                    afterPrint();
+                                }
+                            });
+                        }
+                    
+                        window.onbeforeprint = beforePrint;
+                        window.onafterprint = afterPrint;
+                    }());
+                    
+                    window.print();
+            });
+        }
+
+        function finalAmountChanged() {
+            final_amount = $("#final_amount").val();
+            total = parseInt($("#total").html());
+            given_amount = $("#given_amount").val()
+            if (final_amount > total) {
+                final_amount = total
+                $("#final_amount").val(total);
+                $("#m_final_amount").html(total);
+                $("#discount").html(0);
+                $("#balance").html(calculateBalance(final_amount, given_amount))
+                return ;
+            }
+            if (!final_amount){
+                $("#m_final_amount").html(0);
+                $("#discount").html(100);
+                $("#balance").html(total*-1);
+                return ;
+            }
+            $("#discount").html(calculateDiscount(total, final_amount));
+            $("#m_final_amount").html(final_amount);
+            $("#balance").html(calculateBalance(final_amount, given_amount));
+        }
+
+        function givenAmountChanged() {
+            given_amount = $("#given_amount").val();
+            final_amount = $("#final_amount").val();
+            if (!given_amount) {
+                $("#m_given_amount").html(0);
+                $("#balance").html(final_amount, 0);
+                return;
+            }
+            $("#m_given_amount").html(given_amount);
+            $("#balance").html(calculateBalance(final_amount, given_amount));
+        }
+
+        function calculateDiscount(total, final_amount) {
+            discount_amount = parseInt(total) - parseInt(final_amount);
+            discount_perc = (discount_amount / parseInt(total)) * 100;
+            return Math.ceil(discount_perc);
+        }
+
+        function calculateBalance(final_amount, given_amount) {
+            balance = given_amount - final_amount;
+            return balance
+        }
+
+        $(function(){
+        });
+    </script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+
+{% endblock %}

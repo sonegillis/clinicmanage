@@ -1,0 +1,339 @@
+{% extends base_template %}
+{% load calculate_age %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div id="prescription-div" class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="bsc-tbl">
+                    <table class="table table-sc-ex">
+                        <tbody>
+                            <thead>
+                                <th>Dimebook ID</th>
+                                <th>CNI</th>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Diabetes</th>
+                                <th>Immuno Depressants</th>
+                                <th>Special Cases</th>
+                                <th>Age</th>
+                                <th>Guardian Name</th>
+                                <th>Guardian Contact</th>
+                                <th>Registered At</th>
+                            </thead>
+                            <tr>
+                                <td>{{patient.patient_id}}</td>
+                                <td>{{patient.cni}}</td>
+                                <td>{{patient.name}}</td>
+                                <td>{{patient.bloodgroup}}</td>
+                                <td>{{patient.diabetes}}</td>
+                                <td>{{patient.immuno_depressants}}</td>
+                                <td>{{patient.special_cases}}</td>
+                                <td>{{patient.birth_date|age}}</td>
+                                <td>{{patient.guardian_name}}</td>
+                                <td>{{patient.guardian_tel}}</td>
+                                <td>{{patient.client.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-element-area">
+        <div class="container">
+            <form id="new-prescription-form" method="POST">
+                <div class="row">
+                    <div class="basic-tb-hd">
+                        <h2>Prescribe Drugs</h2>
+                        <a href="#examination-div">See examination/ Laboratory Test</a>
+                        <!-- <p>Form control which supports multiple lines of text. Change 'rows' attribute as necessary.</p> -->
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <div class="form-element-list mg-t-30">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-star"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="drug_name" name="drug_name" type="text" class="form-control">
+                                            <label class="nk-label">Drug</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-star"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="dosage" name="dosage" type="text" class="form-control">
+                                            <label class="nk-label">Dosage</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <div class="contact-btn">
+                                        {% csrf_token %}
+                                        <button type="button" id="add_to_queue" onclick="addPrescriptionToQueue()" class="btn btn-primary primary-icon-notika btn-reco-mg btn-button-mg"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="floating-numner">
+                                    <p>Prescription</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <div class="form-group">
+                                    <div class="nk-int-st">
+                                        <textarea readonly id="prescription" name="prescription" class="form-control auto-size" rows="10" placeholder="Prescription"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="contact-btn">
+                                    {% csrf_token %}
+                                    <button type="button" id="remove_from_queue" onclick="removePrescriptionFromQueue()" class="btn btn-danger primary-icon-notika btn-reco-mg btn-button-mg"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="contact-btn">
+                                    {% csrf_token %}
+                                    <button id="save" type="submit" class="button btn">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="examination-div" class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <a href="#prescription-div">Prescribe Drugs</a>
+                            </div>
+                            <div class="basic-tb-hd">
+                                <h2>Parameters</h2>
+                                <p>Date Examined: {{examination.examination_date}}</p>
+                                <p>Examined By: {{examination.examined_by.first_name}} {{examination.examined_by.last_name}}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Symptoms</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled name="symptoms" class="form-control auto-size" rows="2">{{examination.symptoms}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Vaccines</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled name="vaccines" class="form-control auto-size" rows="2" placeholder="Vaccines...">{{examination.vaccines}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Allergies</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled name="allergies" class="form-control auto-size" rows="2">{{examination.allergies}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Diagnoses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled name="diagnoses" class="form-control auto-size" rows="2">{{examination.diagnoses}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        <p>Notes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea  disabled name="notes" class="form-control auto-size" rows="2">{{examination.notes}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="basic-tb-hd">
+                                <a href="#prescription-div">Prescribe Drugs</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Laboratory Test</h2>
+                                <p>Date: {{labtest.labtest_date}}</p>
+                                <p>Done By: {{labtest.done_by.first_name}} {{labtest.done_by.last_name}}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled class="form-control auto-size" rows="20">
+{% for labtest_detail in labtest_details %}
+{{labtest_detail.labtest_name}} ({{labtest_detail.labtest_result}})
+{% endfor %}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script>
+        $("#new-prescription-form").validate({
+            debug: true,
+            rules: {
+                // name : "required",
+                // birth_date : "required",
+                // gender : "required",
+                // tel: "required",
+                // address: "required"
+            },
+            submitHandler: function(form){
+                $("#save").prop('disabled', true);
+                form_data = $("#new-prescription-form").serialize();
+                $.ajax({
+                    type : "POST",
+                    url : window.location.href,
+                    data : form_data,
+                    dataType : 'text',
+                    success : function(response){
+                        swal({
+                                title: "Successfully submitted Prescription",
+                                text: "Patient ID: {{patient.patient_id}}",
+                                type: "success",
+                                closeOnClickOutside: false,
+                                closeOnEsc: false,
+                                allowOutsideClick: false,
+                                }).then(function() {
+                                    window.location.href = "/"+ response+ "/prescription/new/";
+                            });
+                    },
+                    error: function(response){
+                        alert("failure");
+                        //$("#result").html('There is error while submit');
+                    },               
+                //Your code for AJAX Ends
+                }); 
+                return false;
+            },    
+        });
+        $(function(){
+            $("#drug_name").focus();
+            $('#dosage').keypress(function (e) {
+                var key = e.which;
+                if(key == 13)  // the enter key code
+                {
+                    $("#add_to_queue").click();
+                    e.preventDefault();
+                }
+            }); 
+        });
+        function addPrescriptionToQueue(){
+            var drug = $("#drug_name").val();
+            var dose = $("#dosage").val();
+            if (drug!="" && dosage!=""){
+                if($("#prescription").val() != ""){
+                    var newPrescription = $("#prescription").val() + drug + " (" + dose + ")\n";
+                    $("#prescription").val(newPrescription);
+                }
+                else{
+                    $("#prescription").val(drug + " (" + dose + ")\n");
+                }
+            }
+            emptyFields();
+        }
+        function removePrescriptionFromQueue(){
+            var prescription = $("#prescription").val().split("\n");
+            prescription.pop();
+            prescription.pop();
+            $("#prescription").val(prescription.join("\n")+"\n");
+            emptyFields();
+        }
+
+        function emptyFields(){
+            $("#drug_name").val("");
+            $("#dosage").val("");
+            $("#drug_name").focus();
+        }
+</script>
+<script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

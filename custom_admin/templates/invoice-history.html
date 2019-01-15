@@ -1,0 +1,72 @@
+{% extends base_template %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="form-element-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h6>TOTAL /FCFA</h6>
+                        </div>
+                        <div class="basic-tb-hd">
+                            <h4 id="total">{{total}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="form-element-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h6>FINAL AMOUNT /FCFA</h6>
+                        </div>
+                        <div class="basic-tb-hd">
+                            <h4 id="m_final_amount">{{final_amount}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="form-element-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h6>DISCOUNT %</h6>
+                        </div>
+                        <div class="basic-tb-hd">
+                            <h4 id="discount">{{discount}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="form-element-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h6>GIVEN AMOUNT /FCFA</h6>
+                        </div>
+                        <div class="basic-tb-hd">
+                            <h4 id="m_given_amount">{{given_amount}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="form-element-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h6>BALANCE /FCFA</h6>
+                        </div>
+                        <div class="basic-tb-hd">
+                            <h4 id="balance">{{balance}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

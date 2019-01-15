@@ -1,0 +1,309 @@
+{% extends base_template %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Edit Patient</h2>
+                            <p>Patient Information can be eddited here </p>
+                            <div class="alert alert-success" role="alert">Patient ID: {{patient.patient_id}}
+                            </div>
+                        </div>
+                        <form id="patient-form" method="POST">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-24">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="name" name="name" type="text" class="form-control" placeholder="Name" value="{{patient.name}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="birth_date" value={{patient.birth_date|date:'Y-m-d'}} name="birth_date" type="text" class="form-control" placeholder="Birth Date">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            
+                                        </div>
+                                        <div class="nk-int-st">
+                                            {% if patient.gender == 'm' %}
+                                            <input type="radio" name="gender" value="m" checked>Male
+                                            {% else %}
+                                            <input type="radio" name="gender" value="m">Male
+                                            {% endif %}
+                                            {% if patient.gender == 'f' %}
+                                            <input type="radio" name="gender" value="f" checked>Female
+                                            {% else %}
+                                            <input type="radio" name="gender" value="f">Female
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-phone"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="tel" type="text" class="form-control" placeholder="Phone Number" value="{{patient.tel}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="address" type="text" class="form-control" placeholder="Address" value="{{patient.address}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-mail"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="email" type="text" class="form-control" placeholder="Email" value="{{patient.email}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="far fa-heart"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <select name="bloodgroup" class="form-control" id="bloodgroup">
+                                                {% if patient.bloodgroup == '' %}
+                                                <option name="bloodgroup" value="" selected></option>
+                                                {% else %}
+                                                <option name="bloodgroup" value=""></option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'O-' %}
+                                                <option name="bloodgroup" value="O-" selected>O-</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="O-">O-</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'O+' %}
+                                                <option name="bloodgroup" value="O+" selected>O+</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="O+">O+</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'A+' %}
+                                                <option name="bloodgroup" value="A+" selected>A+</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="A+">A+</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'A-' %}
+                                                <option name="bloodgroup" value="A-" selected>A-</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="A-">A-</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'B-' %}
+                                                <option name="bloodgroup" value="B-" selected>B-</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="B-">B-</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'B+' %}
+                                                <option name="bloodgroup" value="B+" selected>B+</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="B+">B+</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'AB-' %}
+                                                <option name="bloodgroup" value="AB-" selected>AB-</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="AB-">AB-</option>
+                                                {% endif %}
+                                                {% if patient.bloodgroup == 'AB+' %}
+                                                <option name="bloodgroup" value="AB+" selected>AB+</option>
+                                                {% else %}
+                                                <option name="bloodgroup" value="AB+">AB+</option>
+                                                {% endif %}
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int">
+                                        <div class="form-ic-cmp">
+                                            
+                                        </div>
+                                        <div class="nk-int-st">
+                                            Add Visit<input id="add_visit" type="checkbox" name="add_visit" checked>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                        
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="diabetes" type="text" class="form-control" placeholder="Diabetes" value="{{patient.diabetes}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="immuno_depressants" type="text" class="form-control" placeholder="Immuno Depressants" value="{{patient.immuno_depressants}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="special_cases" type="text" class="form-control" placeholder="Special Cases" value="{{patient.speacial_cases}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="guardian_name" type="text" class="form-control" placeholder="Guardian Name" value="{{patient.guardian_name}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="guardian_tel" type="text" class="form-control" placeholder="Guardian Contact" value="{{patient.guardian_tel}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <!-- <i class="notika-icon notika-house"></i> -->
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="cni" type="text" class="form-control" placeholder="CNI" value="{{patient.cni}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <textarea name="notes" type="text" class="form-control" placeholder="Notes"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="nk-int-st">
+                                            {% csrf_token %}
+                                            <button id="submit_form" type="submit" class="btn btn-info notika-btn-info">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script>
+        $(function(){
+            $("#patient-form").validate({
+                debug: true,
+                rules: {
+                    name : "required",
+                    birth_date : "required",
+                    gender : "required",
+                    tel: "required",
+                    address: "required"
+                },
+                submitHandler: function(form){
+                    $("#submit_form").prop('disabled', true);
+                    form_data = $("#patient-form").serialize();
+                    $.ajax({
+                        type : "POST",
+                        url : window.location.href,
+                        data : form_data,
+                        dataType : 'text',
+                        success : function(response){
+                            swal({
+                                    title: "Successfully editted " + $("#name").val(),
+                                    text: "Patient ID: {{patient.patient_id}}",
+                                    type: "success",
+                                    closeOnClickOutside: false,
+                                    closeOnEsc: false,
+                                    allowOutsideClick: false,
+                                    }).then(function() {
+                                    // Redirect the user
+                                    window.location.href = response;
+                            });
+                        },
+                        error: function(response){
+                            alert("failure");
+                            //$("#result").html('There is error while submit');
+                        },               
+                    //Your code for AJAX Ends
+                    }); 
+                    return false;
+                },    
+            });
+        });
+    </script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+    <!-- <script src="{% static 'js/patient-form-validation.js' %}"></script> -->
+{% endblock %}

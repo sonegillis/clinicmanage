@@ -1,0 +1,108 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+ <head>
+     <meta charset="utf-8">
+    <title>Invoice</title>
+
+    {% load static %}
+    <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/style2.css' %}">
+    <script type="text/javascript" src={% static 'js/bootstrap.js' %}></script>
+    <script type="text/javascript" src={% static 'js/jquery-3.3.1.js' %}></script>
+
+    <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+    }
+    @media print
+            {
+                @page {
+                    margin-top: 0;
+                    margin-bottom: 0;
+                }
+                body  {
+                    padding-top: 0px;
+                    padding-bottom: 72px ;
+                }
+            }
+    </style>
+ </head>
+ <body>
+
+    <h5 style="text-align:center"></h5>
+
+    <div align="center">
+        <font size="2">
+            <div>{{client.name}}</div>
+            <div><span>ADDRESS:</span>{{client.address}}</div>
+            <div><span>TEL:</span>{{client.tel}}</div>
+            <div><span>{% trans 'DATE' %}: </span>{{date}}</div>
+            <!--<div><span>{% trans 'Ticket Number' %}: </span>{{sales_id}}</div>-->
+        </font>
+    </div>
+    <p></p>
+    <p></p>
+
+    <div align="center">
+        <font size="2">
+            <div><span>{% trans 'Transaction ID' %}: </span>{{sales_id}}</div>
+        </font>
+
+    </div>
+
+    <table align="center" style="width:30%; text-align:center">
+        <tr>
+            <th><font size="1"> {% trans 'Drug' %} </font></th>
+            <th><font size="1"> {% trans 'U.P/FCFA' %} </font></th>
+            <th><font size="1"> {% trans 'QTY' %} </font></th>
+            <th><font size="1"> {% trans 'Total/FCFA' %} </font></th>
+        </tr>
+        {{prescription_html | safe}}
+
+        <tr>
+            <th><font size="1"> {% trans 'Test' %} </font></th>
+            <th><font size="1"> {% trans 'Price' %} /FCFA</font></th>
+        </tr>
+        {{labtest_html | safe}}
+
+        <tr>
+            <th><font size="1"> {% trans 'No of days' %} </font></th>
+            <th><font size="1"> {% trans 'U.P/FCFA' %} </font></th>
+            <th><font size="1"> {% trans 'Total/FCFA' %} </font></th>
+        </tr>
+        {{hospitalisation_html | safe}}
+
+        <tr>
+            <td colspan="3" class="total"> <font size="1"> {% trans 'TOTAL' %}/FCFA </font></td>
+            <td class="grand total"><font size="1">{{total}}</font></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="discount"> <font size="1"> {% trans 'Discount' %}/% </font></td>
+            <td class="grand total"><font size="1">{{discount}}</font></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="grand total"> <font size="1"> {% trans 'FINAL AMOUNT' %}/FCFA </font></td>
+            <td class="grand total"><font size="1">{{final_amount}}</font></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="grand total"> <font size="1"> {% trans 'GIVEN AMOUNT' %}/FCFA </font></td>
+            <td class="grand total"><font size="1">{{given_amount}}</font></td>
+        </tr>
+        <tr>
+            <td colspan="3" class="grand total"> <font size="1"> {% trans 'BALANCE' %}/FCFA </font></td>
+            <td class="grand total"><font size="1">{{balance}}</font></td>
+        </tr>
+    </table>
+
+    <p style="text-align: center">Dear Customer, Thanks for staying with us. Get well soon</p>
+   </body>
+
+ <script type="text/javascript">
+
+ </script>
+</html>

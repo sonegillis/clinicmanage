@@ -1,0 +1,85 @@
+{% extends base_template %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <form id="search" method="POST">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group ic-cmp-int">
+                            <div class="form-ic-cmp">
+                                
+                            </div>
+                            <div class="nk-int-st">
+                                <input id="transaction_id" name="transaction_id" type="text" class="form-control" placeholder="Transaction ID">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                            <div class="nk-int-st">
+                                {% csrf_token %}
+                                <button class="btn btn-success notika-btn-success">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script>
+        $(function(){
+            $("#transaction_id").focus();
+            $("#search").submit(function(e) {
+                e.preventDefault();
+            }).validate({
+                    debug: true,
+                    rules: {
+                        transaction_id : "required",
+                    },
+                    submitHandler: function(form){
+                        form_data = $("#search").serialize();
+                        $.ajax({
+                            type : "POST",
+                            url : window.location.href,
+                            data : form_data,
+                            dataType : 'json',
+                            success : function(response){
+                                window.location.replace("/"+response.response_redirect_url+"/invoice-history/"+response.transaction_id+"/");                        
+                            },
+                            error: function(xhr, status, error){
+                                var msg = JSON.parse(xhr.responseText);
+                                swal({
+                                    title: "This Transaction ID does not exists",
+                                    text: msg.transaction_id,
+                                    type: "error",
+                                    closeOnClickOutside: false,
+                                    closeOnEsc: false,
+                                    allowOutsideClick: false,
+                                    }).then(function() {
+                                        
+                                });
+                            },               
+                        //Your code for AJAX Ends
+                        }); 
+                        return false;
+                    },    
+                });
+            });
+    </script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

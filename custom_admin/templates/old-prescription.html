@@ -1,0 +1,114 @@
+{% extends base_template %}
+{% load calculate_age %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="bsc-tbl">
+                    <table class="table table-sc-ex">
+                        <tbody>
+                            <thead>
+                                <th>Dimebook ID</th>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Diabetes</th>
+                                <th>Immuno Depressants</th>
+                                <th>Special Cases</th>
+                                <th>Age</th>
+                                <th>Guardian Name</th>
+                                <th>Guardian Contact</th>
+                                <th>Registered At</th>
+                            </thead>
+                            <tr>
+                                <td>{{patient.patient_id}}</td>
+                                <td>{{patient.name}}</td>
+                                <td>{{patient.bloodgroup}}</td>
+                                <td>{{patient.diabetes}}</td>
+                                <td>{{patient.immuno_depressants}}</td>
+                                <td>{{patient.special_cases}}</td>
+                                <td>{{patient.birth_date|age}}</td>
+                                <td>{{patient.guardian_name}}</td>
+                                <td>{{patient.guardian_tel}}</td>
+                                <td>{{patient.client.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-element-area">
+        <div class="container">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Prescription</h2>
+                                <p>Date Prescribed: {{prescription.prescription_date}}</p>
+                                <p>Prescribed By: {{prescription.prescribed_by.first_name}} {{prescription.prescribed_by.last_name}}</p>
+                                <p>Drugs Given By: {{prescription_details.0.sold_by.first_name}} {{prescription_details.0.sold_by.last_name}}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+                                            <textarea disabled class="form-control auto-size" rows="20">
+{% for prescription_detail in prescription_details %}
+{{prescription_detail.drug}} ({{prescription_detail.dose}}) | {{prescription_detail.drug_alternative}} ({{prescription_detail.dose_alternative}})
+{% endfor %}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+    <div class="form-element-area">
+        <div class="container">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-element-list mg-t-30">
+                            <div class="basic-tb-hd">
+                                <h2>Prescription</h2>
+                                <p>Date Prescribed: {{prescription.prescription_date}}</p>
+                                <p>Prescribed By: {{prescription.prescribed_by.first_name}} {{prescription.prescribed_by.last_name}}</p>
+                                <p>Drugs Given By: {{prescription_detail.sold_by.first_name}} {{prescription_detail.sold_by.last_name}}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="floating-numner">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <div class="nk-int-st">
+{% block javascript %}
+
+{% endblock %}

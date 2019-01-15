@@ -1,0 +1,157 @@
+{% extends 'superadmin-base.html' %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Add Administrator</h2>
+                            <p>Administrators to run the various Medical Milieus such as Clinics and Hospitals Information should be added here </p>
+                        </div>
+                        <form id="userprofile-form" method="POST">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="username" name="username" type="text" class="form-control">
+                                            <label class="nk-label">Username</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-star"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="password1" name="password1" type="password" class="form-control">
+                                            <label class="nk-label">Password</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-star"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input id="password2" name="password2" type="password" class="form-control">
+                                            <label class="nk-label">Confirm Password</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="first_name" type="text" class="form-control">
+                                            <label class="nk-label">First Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-support"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="last_name" type="text" class="form-control">
+                                            <label class="nk-label">Last Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb floating-lb">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-phone"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="tel" type="text" class="form-control">
+                                            <label class="nk-label">Contact Number</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-mail"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="email" type="text" class="form-control">
+                                            <label class="nk-label">Email</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-picture"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <input name="profile_pic" type="file" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="form-ic-cmp">
+                                            <i class="notika-icon notika-house"></i>
+                                        </div>
+                                        <div class="nk-int-st">
+                                            <select name="client" class="form-control" id="sel1">
+                                                <option name="client" value=""></option>
+                                                {% for client in clients %}
+                                                    <option name="client" value="{{client.id}}">{{client.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group ic-cmp-int float-lb form-elet-mg">
+                                        <div class="nk-int-st">
+                                            {% csrf_token %}
+                                            <button id="add-worker" type="submit" class="btn btn-info notika-btn-info">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.0/additional-methods.min.js"></script>
+    <script src="{% static 'js/userprofile-form-validation.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'admin-base.html' %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/sweetalert2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+    <div class="normal-table-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="normal-table-list">
+                            <div class="basic-tb-hd">
+                                <h2>Select Worker To Change</h2>
+                                <!-- <p>Basic example without any additional modification classes</p> -->
+                            </div>
+                            <div class="basic-tb-hd">
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                                        <p>Action: </p>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                                        <div class="dropdown-trig-sgn">
+                                            <button class="btn triger-zoomIn" data-toggle="dropdown">Select</button>
+                                            <ul class="dropdown-menu triger-zoomIn-dp">
+                                                <li><a onclick="$('#action').text('-----------------')" href="#">----------------------</a></li>
+                                                <li><a onclick="$('#action').text('Delete')" href="#">Delete Selected Workers</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                                        <p id="action">---------------------</p>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                                        {% csrf_token %}
+                                        <button id="go" type="submit" class="btn btn-danger notika-btn-info">Go</button>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                                        <p><span id="num_of_selected_workers">0</span> of {{workers.count}} selected</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bsc-tbl">
+                                <table class="table table-sc-ex">
+                                    <tbody>
+                                        <thead>
+                                            <th><input name="select_all" type="checkbox"></th>
+                                            <th>Username</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Designation</th>
+                                            <th></th>
+                                        </thead>
+                                        {% for worker in workers %}
+                                            <tr>
+                                                <td><input id="{{worker.user.id}}" class="select_user" name="select_user" type="checkbox"></td>
+                                                <td><a href="{% url 'custom-admin:edit-worker' worker.user.id %}">{{worker.user.username}}</a></td>
+                                                <td>{{worker.user.first_name}}</td>
+                                                <td>{{worker.user.last_name}}</td>
+                                                <td>{{worker.user.email}}</td>
+                                                <td>{{worker.designation | upper}}</td>
+                                                <td><a href="{% url 'custom-admin:worker-change-password' worker.user.id %}">Change Password</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/superadmin-userprofile.js' %}"></script>
+    <script src="{% static 'js/sweetalert2.min.js' %}"></script>
+    <script>
+        $(function(){
+            num_of_workers = "{{workers.count}}";
+        });
+    </script>
+{% endblock %}
