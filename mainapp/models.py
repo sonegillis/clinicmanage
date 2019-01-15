@@ -31,8 +31,8 @@ bloodgroup = (
 )
 
 class Client(models.Model):
-    name = models.CharField(max_length=30)
-    address = models.CharField(max_length=30)
+    name = models.CharField(max_length=300)
+    address = models.CharField(max_length=300)
     tel = models.CharField(max_length=30)
     logo = models.ImageField(upload_to="clinic-logo/", null=True)
     email = models.EmailField()
