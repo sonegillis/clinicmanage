@@ -1150,7 +1150,7 @@ def newInvoice(request, patient_id):
             "userprofile" : userprofile,
             "nav_icon" : "fas fa-dollar-sign",
             "main_nav" : "New Invoice",
-            "sub_nav" : "",
+            "sub_nav" : patient[0].name,
             "prescription_detail" : prescription_detail,
             "labtest_detail" : labtest_detail,
             "base_template" : base_template,
@@ -1219,6 +1219,12 @@ def invoiceHistorySearch(request):
 
 @login_required
 def generateInvoice(request, patient_id):
+    designation = getWorkerDesignation(request.user)
+    if designation == "admin":
+        response_redirect_url = "custom-admin"
+    if designation == "cashier":
+        response_redirect_url = "cashier"
+
     print(request.POST)
 
     userprofile = UserProfile.objects.filter(user=request.user)[0]
@@ -1226,23 +1232,26 @@ def generateInvoice(request, patient_id):
 
     invoice_data = json.loads(request.POST['invoice_data'])
     prescriptions = invoice_data['prescription'].strip('@').split("@")
-    prescriptions.remove('/')
+    if prescriptions.__contains__('/'): prescriptions.remove('/')
     labtests = invoice_data['labtest'].strip('@').split('@')
     hospitalisation = invoice_data['hospitalisation'].split('@')
     
     prescription_html = ""
+    print("Prescription: ", prescriptions)
     for prescription in prescriptions:
-        drug_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[3])
-        quantity_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[0])
-        unit_price_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[1])
-        price_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[2])
-        prescription_html += "<tr>" + drug_html + unit_price_html + quantity_html + price_html + "</tr>"
+        if prescription:
+            drug_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[3])
+            quantity_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[0])
+            unit_price_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[1])
+            price_html = "<td><font size=\"1\">{}</font></td>".format(prescription.strip('/').split('/')[2])
+            prescription_html += "<tr>" + drug_html + unit_price_html + quantity_html + price_html + "</tr>"
 
     labtest_html = ""
     for labtest in labtests:
-        test_html = "<td><font size=\"1\">{}</font></td>".format(labtest.strip('/').split('/')[0])
-        price_html = "<td><font size=\"1\">{}</font></td>".format(labtest.strip('/').split('/')[1])
-        labtest_html += "<tr>" + test_html + price_html + "</tr>"
+        if labtest:
+            test_html = "<td><font size=\"1\">{}</font></td>".format(labtest.strip('/').split('/')[0])
+            price_html = "<td><font size=\"1\">{}</font></td>".format(labtest.strip('/').split('/')[1])
+            labtest_html += "<tr>" + test_html + price_html + "</tr>"
 
     hospitalisation_html = ""
     hosp_days_html = "<td><font size=\"1\">{}</font></td>".format(hospitalisation[0])
@@ -1274,18 +1283,20 @@ def generateInvoice(request, patient_id):
                         total = hospitalisation[2]
                     )
     hospitalisation.save()
+    prescription = None
     if len(prescription_id):
         prescription = Prescription.objects.filter(id=int(prescription_id))
         prescription.update(has_paid=True)
     labtest_id = invoice_data['labtest_id']
+    labtest = None
     if len(labtest_id):
         labtest = LabTest.objects.filter(id=int(labtest_id))
         labtest.update(has_paid=True)
 
     invoice_stats = InvoiceStatistics(
                         patient = patient,
-                        prescription = prescription[0],
-                        labtest = labtest[0],
+                        prescription = prescription[0] if prescription else None,
+                        labtest = labtest[0] if labtest else None,
                         hospitalisation = hospitalisation,
                         total = invoice_data['total'],
                         discount = invoice_data['discount'],
@@ -1298,7 +1309,13 @@ def generateInvoice(request, patient_id):
 
     template_name = "invoice-receipt.html"
     template = render_to_string(template_name, context)
-    return HttpResponse(template)
+    response = json.dumps(
+        {
+            "template" : template,
+            "response_redirect_url" : response_redirect_url
+        }
+    )
+    return HttpResponse(response)
 
 @login_required
 def invoiceHistory(request, transaction_id):

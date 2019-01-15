@@ -296,12 +296,14 @@
             $.post(url, {'csrfmiddlewaretoken' : '{{csrf_token}}', 'invoice_data' : invoice_data},
                 function(data, status){
                     invoice_data = {};
-                    var printcontents = data;
+                    data = JSON.parse(data);
+                    var printcontents = data['template'];
+
                     //var originalcontents = document.body.innerHTML;
                     document.body.innerHTML = printcontents;
                     (function() {
                         var beforePrint = function() {
-                            window.location.reload();
+                            window.location.href =window.location.protocol+"//"+window.location.hostname+":"+window.location.port+"/"+data['response_redirect_url']+"/invoice/";
                         };
                         var afterPrint = function() {
                         };
