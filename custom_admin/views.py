@@ -1351,7 +1351,8 @@ def invoiceHistory(request, patient_id):
                         'balance' : invoice_stats.balance
                     }
         return render(request, template_name, context)
-            
+    if request.method == 'POST':
+        pass   
 
 @login_required
 def editInformation(request):

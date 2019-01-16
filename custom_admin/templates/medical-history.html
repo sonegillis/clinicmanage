@@ -111,14 +111,7 @@
         $(document).ready(function() {
             var start, start_date;
             var end, end_date;
-            var logo = ""
-            if ("{{client.logo}}") {
-                alert("Found logo")
-                logo = "{{client.logo.url}}";
-            }
-            else {
-                alert("Did not find logo");
-            }
+            var logo = "{{clinic_logo}}"
             
             var patient_name = "{{patient.name}}";
             var doc = new jsPDF('p', 'pt', 'a4');
