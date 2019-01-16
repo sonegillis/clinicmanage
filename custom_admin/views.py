@@ -1196,8 +1196,8 @@ def invoiceHistorySearch(request):
     
     if request.method == "POST":
         patient_id = request.POST["patient_id"]
-
-        if invoice_stats.exists():
+        patient = Patient.objects.filter(Q(patient_id=patient_id) | Q(cni=patient_id))
+        if patient.exists():
             return HttpResponse(
                 json.dumps(
                     {
@@ -1319,6 +1319,7 @@ def generateInvoice(request, patient_id):
 @login_required
 def invoiceHistory(request, patient_id):
     designation = getWorkerDesignation(request.user)
+    patient = Patient.objects.filter(Q(patient_id=patient_id) | Q(cni=patient_id))[0]
     if designation == "admin":
         base_template = "admin-base.html"
         response_redirect_url = "custom-admin"
@@ -1330,10 +1331,8 @@ def invoiceHistory(request, patient_id):
     else:
         return HttpResponse("You do not have permission to access this page!! This account will be reported")
 
-    invoice_stats = InvoiceStatistics.objects.filter(id=int(transaction_id.strip('0')))[0]
     if request.method == 'GET':
         userprofile = UserProfile.objects.filter(user=request.user)[0]
-        patient = Patient.objects.filter(patient_id=invoice_stats.patient.patient_id)[0]
         template_name = "invoice-history.html"
         context =   {
                         "title" : title,
@@ -1344,15 +1343,15 @@ def invoiceHistory(request, patient_id):
                         "sub_nav" : patient.name,
                         "base_template" : base_template,
                         "client" : getClient(request.user),
-                        'total' : invoice_stats.total,
-                        'final_amount' : invoice_stats.final_amount,
-                        'given_amount' : invoice_stats.given_amount,
-                        'discount' : invoice_stats.discount,
-                        'balance' : invoice_stats.balance
                     }
         return render(request, template_name, context)
     if request.method == 'POST':
-        pass   
+        template_name = "invoice-history-data.html"
+        start_date = timezone.datetime.strptime(request.POST["start"], '%B %d, %Y')
+        end_date = timezone.datetime.strptime(request.POST["end"], '%B %d, %Y') + timezone.timedelta(days=1)
+        invoice_stats = InvoiceStatistics.objects.filter(Q(patient=patient) & Q(date__range=[start_date, end_date])).order_by('-date')  
+        template = render_to_string(template_name, {"invoice_stats" : invoice_stats})
+        return HttpResponse(template)
 
 @login_required
 def editInformation(request):
