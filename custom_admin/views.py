@@ -1188,21 +1188,20 @@ def invoiceHistorySearch(request):
             "userprofile" : userprofile,
             "nav_icon" : "fas fa-dollar-sign",
             "main_nav" : "Invoice History",
-            "sub_nav" : "Search By Transaction ID",
+            "sub_nav" : "Search By Dimebook ID or CNI",
             "base_template" : base_template,
             "client" : getClient(request.user),
         }
         return render(request, template_name, context)
     
     if request.method == "POST":
-        transaction_id = request.POST["transaction_id"]
-        invoice_stats = InvoiceStatistics.objects.filter(id=int(transaction_id.strip('0')))
+        patient_id = request.POST["patient_id"]
 
         if invoice_stats.exists():
             return HttpResponse(
                 json.dumps(
                     {
-                        'transaction_id' : transaction_id,
+                        'patient_id' : patient_id,
                         'response_redirect_url' : response_redirect_url,
                     }
                 )
@@ -1212,7 +1211,7 @@ def invoiceHistorySearch(request):
             return HttpResponse(
                 json.dumps(
                     {
-                        'transaction_id' : transaction_id
+                        'patient_id' : patient_id
                     }
                 ), status=404
             )
@@ -1318,7 +1317,7 @@ def generateInvoice(request, patient_id):
     return HttpResponse(response)
 
 @login_required
-def invoiceHistory(request, transaction_id):
+def invoiceHistory(request, patient_id):
     designation = getWorkerDesignation(request.user)
     if designation == "admin":
         base_template = "admin-base.html"
