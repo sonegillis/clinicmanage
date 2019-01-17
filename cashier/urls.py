@@ -31,6 +31,6 @@ urlpatterns = [
     url(r'^new-invoice/(?P<patient_id>[A-Z0-9]*)/$', newInvoice, name="new-invoice"),
     url(r'^search-invoice-history/$', invoiceHistorySearch, name="search-invoice-history"),
     url(r'^generate-invoice/(?P<patient_id>[A-Z0-9]*)/$', generateInvoice, name="generate-invoice"),
-    url(r'^invoice-history/(?P<patient_id>[0-9]*)/$', invoiceHistory, name="invoice-history"),
+    url(r'^invoice-history/(?P<patient_id>[A-Z0-9]*)/$', invoiceHistory, name="invoice-history"),
     url(r'^change-password/$', changePassword, name="change-password"),
 ]
