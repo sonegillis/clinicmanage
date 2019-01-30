@@ -140,7 +140,11 @@
         <div class="row no-gutters popup-gallery">
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="#">
+              {% if superadmin.image1 %}
               <img class="img-fluid" src="{{superadmin.image1.url}}" alt="">
+              {% else %}
+              <img class="img-fluid" src="" alt="">
+              {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
@@ -155,7 +159,11 @@
           </div>
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="#">
-              <img class="img-fluid" src="{{superadmin.image2.url}}" alt="">
+                {% if superadmin.image2 %}
+                <img class="img-fluid" src="{{superadmin.image2.url}}" alt="">
+                {% else %}
+                <img class="img-fluid" src="" alt="">
+                {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
@@ -170,7 +178,11 @@
           </div>
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="#">
-              <img class="img-fluid" src="{{superadmin.image3.url}}" alt="">
+                {% if superadmin.image3 %}
+                <img class="img-fluid" src="{{superadmin.image3.url}}" alt="">
+                {% else %}
+                <img class="img-fluid" src="" alt="">
+                {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
@@ -185,7 +197,11 @@
           </div>
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="#">
-              <img class="img-fluid" src="{{superadmin.image4.url}}" alt="">
+                {% if superadmin.image4 %}
+                <img class="img-fluid" src="{{superadmin.image4.url}}" alt="">
+                {% else %}
+                <img class="img-fluid" src="" alt="">
+                {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
@@ -200,7 +216,11 @@
           </div>
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="#">
-              <img class="img-fluid" src="{{superadmin.image5.url}}" alt="">
+                {% if superadmin.image5 %}
+                <img class="img-fluid" src="{{superadmin.image5.url}}" alt="">
+                {% else %}
+                <img class="img-fluid" src="" alt="">
+                {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
@@ -215,7 +235,11 @@
           </div>
           <div class="col-lg-4 col-sm-6">
             <a class="portfolio-box" href="{% static 'img/portfolio/fullsize/6.jpg' %}">
+              {% if superadmin.image6 %}
               <img class="img-fluid" src="{{superadmin.image6.url}}" alt="">
+              {% else %}
+              <img class="img-fluid" src="" alt="">
+              {% endif %}
               <div class="portfolio-box-caption">
                 <div class="portfolio-box-caption-content">
                   <div class="project-category text-faded">
