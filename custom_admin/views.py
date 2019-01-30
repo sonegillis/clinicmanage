@@ -1433,3 +1433,114 @@ def changeWorkerPassword(request, worker_id):
         user.set_password(request.POST["password1"])
         user.save()
         return HttpResponse("change_worker_password")
+
+def clinicStatistics(request):
+    designation = getWorkerDesignation(request.user)
+    if designation == "admin":
+        base_template = "admin-base.html"
+        response_redirect_url = "custom-admin"
+        title = "Admin | Clinic Statistics"
+        active = "home"
+        main_nav = "Clinic Statistics"
+        nav_icon = "far fa-file-alt"
+    elif designation == "doctor":
+        base_template = "doctor-base.html"
+        response_redirect_url = "doctor"
+        title = "Doctor | Clinic Statistics"
+        active = ""
+        main_nav = "Clinic Statistics"
+        nav_icon = "far fa-file-alt"
+    elif designation == "nurse":
+        base_template = "nurse-base.html"
+        response_redirect_url = "nurse"
+        title = "Nurse | Clinic Statistics"
+        active = ""
+        main_nav = "Clinic Statistics"
+        nav_icon = "far fa-file-alt"
+    else:
+        return HttpResponse("You do not have permission to access this page!! This account will be reported")
+
+    if request.method == "GET":
+        template_name = "clinic-statistics.html"
+
+        userprofile = UserProfile.objects.filter(user=request.user)[0]
+        client = Client.objects.filter(id=getClient(request.user).id)[0]
+        clinic_logo = ""
+
+        if client.logo:
+            clinic_logo = client.logo.url
+
+        context = {
+            "title" : title,
+            "active" : active,
+            "userprofile" : userprofile,
+            "nav_icon" : nav_icon,
+            "main_nav" : main_nav,
+            "sub_nav" : "Clinic Statistics",
+            "base_template" : base_template,
+            "client" : client,
+            "clinic_logo" : clinic_logo,
+        }
+        return render(request, template_name, context)
+    if request.method == "POST":
+        start_date = timezone.datetime.strptime(request.POST["start"], '%B %d, %Y')
+        end_date = timezone.datetime.strptime(request.POST["end"], '%B %d, %Y') + timezone.timedelta(days=1)
+        examinations = Examination.objects.filter(examination_date__range=[start_date, end_date]).order_by("-examination_date")
+        prescriptions = Prescription.objects.filter(prescription_date__range=[start_date, end_date]).order_by("-prescription_date")
+        examination_list = []
+        prescription_list = []
+        labtest_list = []
+        checked_dates = []
+
+        for examination in examinations:
+            if examination.examination_date in checked_dates:
+                continue
+            prescription = Prescription.objects.filter(Q(patient=examination.patient) & Q(prescription_date__date=examination.examination_date))
+            labtest = LabTest.objects.filter(Q(patient=examination.patient) & Q(labtest_date__date=examination.examination_date))
+            examination_list.append(Examination.objects.filter(Q(patient=examination.patient) & Q(examination_date__date=examination.examination_date)))
+            prescription_list.append(prescription)
+            labtest_list.append(labtest)
+            checked_dates.append(examination.examination_date)
+
+        html = ""
+        clinic_statistics = zip(examination_list, prescription_list, labtest_list)
+        columns = ["DATE", "NAME", "SEX", "AGE", "STATUS", "PREGNANT", "CODE", 
+                    "RESIDENCE", "GUARDIAN CONTACT", "SYMPTOMS", "DIAGNOTICS", "TEST RESULTS",
+                    "TREATMENT", "CONFIRMATORY DIAGNOSTICS", "HOSPITALISATION", "NOTES"]
+        rows = []
+        for examinations, prescriptions, labtests in clinic_statistics:
+            sub_row = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            sub_row[0] = examinations[0].examination_date
+            sub_row[1] = examinations[0].patient.name
+            sub_row[2] = examinations[0].patient.gender
+            sub_row[3] = calculate_age(examinations[0].patient.birth_date)
+            sub_row[4] = ""
+            sub_row[5] = ""
+            sub_row[6] = ""
+            sub_row[7] = examinations[0].patient.address
+            sub_row[8] = examinations[0].patient.guardian_tel
+            sub_row[14] = ""
+            for examination in examinations:
+                sub_row[9] += examination.symptoms
+                sub_row[10] += examination.diagnoses
+                sub_row[15] += examination.notes
+            for prescription in prescriptions:
+                if prescription:
+                    prescription_details = PrescriptionDetail.objects.filter(prescription=prescription)
+                    for prescription_detail in prescription_details:
+                        sub_row[12] += (prescription_detail.drug + "(" + prescription_detail.dose + ")")
+            for labtest in labtests:
+                if labtest:
+                    labtest_details = LabTestDetail.objects.filter(prescription=prescription)
+                    for labtest_detail in labtest_details:
+                        sub_row[11] += (labtest_detail.labtest_name + "(" + labtest_detail.labtest_result + ")")
+
+            rows.append(sub_row)
+
+        response = json.dumps({"columns" : columns,"rows" : rows}, indent=4, default=str)
+        return HttpResponse(response)
+
+def calculate_age(bday, d=None):
+    if d is None:
+        d = datetime.date.today()
+    return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))

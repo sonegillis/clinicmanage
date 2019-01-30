@@ -18,6 +18,7 @@ from custom_admin.views import (
                     Patients, addPatient, editPatient, medicalHistory,
                     newExamination, oldExamination, examination,
                     newPrescription, oldPrescription, prescription,
+                    clinicStatistics,
 )
 from mainapp.views import changePassword
 
@@ -34,5 +35,6 @@ urlpatterns = [
     url(r'^new-prescription/(?P<patient_id>[A-Z0-9]*)/$', newPrescription, name="new-prescription"),
     url(r'^old-prescription/(?P<patient_id>[A-Z0-9]*)/$', oldPrescription, name="old-prescription"),
     url(r'^medical-history/(?P<patient_id>[A-Z0-9]*)/$', medicalHistory, name="medical-history"),
+    url(r'^clinic-statistics/$', clinicStatistics, name="clinic-statistics"),
     url(r'^change-password/$', changePassword, name="change-password"),
 ]

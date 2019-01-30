@@ -23,6 +23,7 @@ from .views import (
                     giveDrugSearch, giveDrug, editInformation,
                     invoice, newInvoice, generateInvoice,
                     invoiceHistory, invoiceHistorySearch,
+                    clinicStatistics,
 )
 from mainapp.views import changePassword
 
@@ -56,5 +57,6 @@ urlpatterns = [
     url(r'^give-drug-search/$', giveDrugSearch, name="give-drug-search"),
     url(r'^give-drug/(?P<patient_id>[A-Z0-9]*)/$', giveDrug, name="give-drug"),
     url(r'^edit-information/$', editInformation, name="edit-information"),
+    url(r'^clinic-statistics/$', clinicStatistics, name="clinic-statistics"),
     url(r'^change-password/$', changePassword, name="change-password"),
 ]

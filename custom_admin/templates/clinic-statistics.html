@@ -1,0 +1,208 @@
+{% extends base_template %}
+{% load calculate_age %}
+{% load static from staticfiles %}
+
+{% block css %}
+<link href="{% static 'css/animate.css' %}" rel="stylesheet" media="all">
+<link href="{% static 'css/dialog.css' %}" rel="stylesheet" />
+<link href="{% static 'css/daterangepicker.css' %}" rel="stylesheet" media="all">
+<link rel="stylesheet" type="text/css" href="{% static  'css/jquery-ui-1.8.17.custom.css' %}">
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/main2.css' %}"> -->
+{% endblock %}
+
+{% block content %}
+    <!-- Main Menu area End-->
+	<!-- Breadcomb area Start-->
+	<div class="breadcomb-area">
+		<div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-element-list mg-t-30">
+                        <div class="cmp-tb-hd">
+                            <h2>Clinic Statistics</h2>
+                            <p>Select range for which you want to generate clinic statistics </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span></span> <i class="fa fa-caret-down"></i>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                    {% csrf_token %}
+                    <button id="pdf-download" class="btn btn-primary notika-btn-info">PDF</button>
+                </div>
+                <!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    {% csrf_token %}
+                    <button class="btn btn-success notika-btn-info">EXCEL</button>
+                </div> -->
+            </div>
+        </div>
+        <p></p>
+        <div class="container">
+            <iframe frameborder="0" width="500" height="400"></iframe>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.8.17.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jspdf.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.5/jspdf.plugin.autotable.js"></script>
+
+    <script type="text/javascript" src="{% static 'js/addimage.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/standard_fonts_metrics.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/split_text_to_size.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/from_html.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/basic.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/FileSaver.js' %}"></script>
+    <script>
+        $(function() {
+            $("#accordion-basic, #accordion-text, #accordion-graphic").accordion({
+                autoHeight: false,
+                navigation: true
+            });
+            $( "#tabs" ).tabs();
+            $(".button").button();
+        });
+    </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var start, start_date;
+            var end, end_date;
+            var logo = "{{clinic_logo}}"
+            
+            var patient_name = "{{patient.name}}";
+            var doc = new jsPDF('l', 'pt', 'a0');
+
+            doc.setFont('times')
+            doc.setFontSize(10)
+            doc.text(50, 160, 'DIMEBOOK.ORG')
+            doc.text(50, 180, 'HEALTH FOR ALL')
+            doc.text(50, 200, '671906987')
+
+            doc.text(450, 160, "{{userprofile.client.name | upper}}")
+            doc.text(450, 180, "{{userprofile.client.address | upper}}")
+            doc.text(450, 200, "{{userprofile.client.email}}")
+            doc.text(450, 220, "{{userprofile.client.tel | upper}}")
+
+            doc.setFontType('bolditalic')
+            doc.text(250, 240, 'LOGBOOK RECORD')
+
+
+            var getImageFromUrl = function(callback) {
+                var img1 = new Image();
+                var img2 = new Image();
+                img1.onError = function() {
+                    alert('Cannot load image');
+                };
+                img1.onload = function() {
+                    callback(50, 50, img1, "dimebook");
+                };
+                img2.onError = function() {
+                    alert('Cannot load image');
+                };
+                img2.onload = function() {
+                    callback(500, 50, img2, "pesma");
+                };
+
+                img1.src = '/static/img/dimebook-logo.jpg';
+                img2.src = logo;
+            }
+
+            var createPDF = function(x, y, imgData, name) {
+                var width = doc.internal.pageSize.width;    
+                var height = doc.internal.pageSize.height;
+                var options = {
+                    pagesplit: true
+                };
+  
+                doc.addImage(imgData, 'JPEG', x, y, 80, 80, name);
+
+                var string = doc.output('datauristring');
+                $('iframe').attr('src', string);
+            }
+
+            $(function() {
+                start = moment().subtract(29, 'days');
+                end = moment();
+                function cb(start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                    start_date = start; end_date = end;
+                }
+                $('#reportrange').daterangepicker({
+                    startDate: start,
+                    endDate: end,
+                    ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    }
+                }, cb);
+                cb(start, end);
+                $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+                    //do something, like clearing an input
+                    $.ajax({
+                        type            :  'POST',
+                        url             :  window.location.href,
+                        dataType        : 'json',
+                        data            :  {
+                                            "start" : start_date.format('MMMM D, YYYY'),
+                                            "end" : end_date.format('MMMM D, YYYY'),
+                                            csrfmiddlewaretoken : $("input[name=csrfmiddlewaretoken]").val()
+                        },
+                        success         :  function(data, textStatus, jqXHR){
+                                            var columns = data.columns;
+                                            var rows = data.rows;
+                                            doc.autoTable(columns, rows,{
+                                                "startY": 450,
+                                                styles: {
+                                                    overflow: 'linebreak',
+                                                    fontSize: 10,
+                                                    tableWidth: 'auto',
+                                                    columnWidth: 'auto',
+                                                },
+                                                columnStyles: {
+                                                    overflow : 'linebreak',
+                                                    fontSize : 5
+                                                },
+                                            });
+                                            var string = doc.output('datauristring');
+                                            $('iframe').attr('src', string);
+                        },
+                    });
+                });
+            });
+            $("#pdf-download").on("click", function(){
+                var d = new Date();
+                var month = d.getMonth()+1;
+                var day = d.getDate();
+
+                var output = d.getFullYear() + '-' +
+                    ((''+month).length<2 ? '0' : '') + month + '-' +
+                    ((''+day).length<2 ? '0' : '') + day;
+
+                fileName = "LOGBOOK.pdf";
+                doc.save(fileName);
+            });
+            getImageFromUrl(createPDF);
+
+            var string = doc.output('datauristring');
+            $('iframe').attr('src', string);
+        });
+    </script>
+{% endblock %}
