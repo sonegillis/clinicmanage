@@ -1436,6 +1436,7 @@ def changeWorkerPassword(request, worker_id):
 
 def clinicStatistics(request):
     designation = getWorkerDesignation(request.user)
+    print(designation)
     if designation == "admin":
         base_template = "admin-base.html"
         response_redirect_url = "custom-admin"
@@ -1447,14 +1448,14 @@ def clinicStatistics(request):
         base_template = "doctor-base.html"
         response_redirect_url = "doctor"
         title = "Doctor | Clinic Statistics"
-        active = ""
+        active = "clinic-statistics"
         main_nav = "Clinic Statistics"
         nav_icon = "far fa-file-alt"
     elif designation == "nurse":
         base_template = "nurse-base.html"
         response_redirect_url = "nurse"
         title = "Nurse | Clinic Statistics"
-        active = ""
+        active = "clinic-statistics"
         main_nav = "Clinic Statistics"
         nav_icon = "far fa-file-alt"
     else:

@@ -458,6 +458,13 @@
                         <li><a data-toggle="tab" href="#Forms"><i class="fas fa-capsules"></i> Prescription</a>
                         </li>
                         {% endif %}
+                        {% if active == "clinic-statistics" %}
+                        <li><a href="{% url 'nurse:clinic-statistics' %}"><i class="far fa-file-alt"></i> Clinic Statistics</a>
+                        </li>
+                        {% else %}
+                        <li><a href="{% url 'nurse:clinic-statistics' %}"><i class="fas fa-file-alt"></i> Clinic Statistics</a>
+                        </li>
+                        {% endif %}
                         <!-- <li><a data-toggle="tab" href="#Appviews"><i class="notika-icon notika-app"></i> App views</a>
                         </li> -->
                     </ul>

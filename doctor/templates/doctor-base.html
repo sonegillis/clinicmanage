@@ -445,17 +445,24 @@
                         </li>
                         {% endif %}
                         {% if active == "examination" %}
-                        <li><a data-toggle="tab" href="#Tables"><i class="far fa-file-alt"></i> Examination</a>
+                        <li class="active"><a data-toggle="tab" href="#Tables"><i class="far fa-file-alt"></i> Examination</a>
                         </li>
                         {% else %}
                         <li><a data-toggle="tab" href="#Tables"><i class="far fa-file-alt"></i> Examination</a>
                         </li>
                         {% endif %}
                         {% if active == "prescription" %}
-                        <li><a data-toggle="tab" href="#Forms"><i class="fas fa-capsules"></i> Prescription</a>
+                        <li class="active"><a data-toggle="tab" href="#Forms"><i class="fas fa-capsules"></i> Prescription</a>
                         </li>
                         {% else %}
                         <li><a data-toggle="tab" href="#Forms"><i class="fas fa-capsules"></i> Prescription</a>
+                        </li>
+                        {% endif %}
+                        {% if active == "clinic-statistics" %}
+                        <li class="active"><a href="{% url 'doctor:clinic-statistics' %}"><i class="far fa-file-alt"></i> Clinic Statistics</a>
+                        </li>
+                        {% else %}
+                        <li><a href="{% url 'doctor:clinic-statistics' %}"><i class="far fa-file-alt"></i> Clinic Statistics</a>
                         </li>
                         {% endif %}
                         <!-- <li><a data-toggle="tab" href="#Appviews"><i class="notika-icon notika-app"></i> App views</a>
@@ -473,18 +480,6 @@
                                 <li><a href="{% url 'doctor:add-patient' %}">Add Patient</a>
                             </ul>
                         </div>
-                        <!--<div id="Charts" class="tab-pane notika-tab-menu-bg animated flipInX">
-                            <ul class="notika-main-menu-dropdown">
-                                <li><a href="flot-charts.html">Flot Charts</a>
-                                </li>
-                                <li><a href="bar-charts.html">Bar Charts</a>
-                                </li>
-                                <li><a href="line-charts.html">Line Charts</a>
-                                </li>
-                                <li><a href="area-charts.html">Area Charts</a>
-                                </li>
-                            </ul>
-                        </div> -->
                         {% if active == 'examination' %}
                         <div id="Tables" class="tab-pane active notika-tab-menu-bg animated flipInX">
                         {% else %}
