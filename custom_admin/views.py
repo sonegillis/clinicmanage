@@ -84,7 +84,7 @@ def addWorker(request):
         profile_pic = request.FILES.get('profile_pic', None)
         if profile_pic:
             fs = FileSystemStorage(location="media/profile-pics", base_url="profile-pics/")
-            picname = fs.save(profile_pic.name, profile_pic)
+            picname = fs.save("user_"+str(user[0].id)+"_pic_"+profile_pic.name, profile_pic)
             uploaded_pic_url = fs.url(picname)
         else:
             uploaded_pic_url = None
@@ -1436,7 +1436,6 @@ def changeWorkerPassword(request, worker_id):
 
 def clinicStatistics(request):
     designation = getWorkerDesignation(request.user)
-    print(designation)
     if designation == "admin":
         base_template = "admin-base.html"
         response_redirect_url = "custom-admin"

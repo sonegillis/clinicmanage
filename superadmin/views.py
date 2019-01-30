@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from mainapp.models import Client, UserProfile, Patient, SuperAdministratorInformation
 from django.core.files.storage import FileSystemStorage
+import glob, os
 import json
+from django.conf import settings
 
 # Create your views here.
 
@@ -46,20 +48,20 @@ def addClient(request):
         
     if request.method == "POST":
         clinic_logo = request.FILES.get('clinic_logo', None)
+        client =  Client (
+                    name = request.POST["client_name"],
+                    address = request.POST["address"],
+                    tel = request.POST["tel"],
+                    email = request.POST["email"]
+                )
+        client.save()
         if clinic_logo:
             fs = FileSystemStorage(location="media/clinic_logo", base_url="clinic-logo/")
-            picname = fs.save(clinic_logo.name, clinic_logo)
+            picname = fs.save("clinic_"+str(client.id)+"_pic_"+clinic_logo.name, clinic_logo)
             uploaded_pic_url = fs.url(picname)
         else:
             uploaded_pic_url = None
-
-        Client(
-            name = request.POST["client_name"],
-            address = request.POST["address"],
-            tel = request.POST["tel"],
-            email = request.POST["email"],
-            logo = uploaded_pic_url,
-        ).save()
+        client.update(logo = uploaded_pic_url)
         response = json.dumps(
             {
                 "client_name" : request.POST["client_name"],
@@ -72,9 +74,9 @@ def addClient(request):
 @login_required
 def editClient(request, client_id):
     userprofile = User.objects.filter(username=request.user)[0]
+    client = Client.objects.filter(id=client_id)[0]
     if request.method == "GET":
         template_name = "edit-client.html"
-        client = Client.objects.filter(id=client_id)[0]
         context = {
             "title" : "Superadmin | edit client",
             "active" : "clients",
@@ -84,24 +86,23 @@ def editClient(request, client_id):
         return render(request, template_name, context)
     
     if request.method == "POST":
-        clinic_logo = None
-        try:
-            clinic_logo = request.FILES['clinic_logo']
+        
+        clinic_logo = request.FILES.get('clinic_logo', None)
+        if clinic_logo:
             fs = FileSystemStorage(location="media/clinic-logo", base_url="clinic-logo/")
+            for filename in glob.glob(settings.MEDIA_ROOT+"/clinic-logo/"+"clinic_"+str(client.id)+"_pic_*"):
+                os.remove(filename)
             picname = fs.save(clinic_logo.name, clinic_logo)
             uploaded_pic_url = fs.url(picname)
-        except Exception as e:
-            pass
-
-        client = Client.objects.filter(id=client_id)[0]
+        else:
+            uploaded_pic_url = None
         
         client.name = request.POST["client_name"]
         client.address = request.POST["address"]
         client.tel = request.POST["tel"]
         client.email = request.POST["email"]
-            
-        if clinic_logo:
-            client.logo = uploaded_pic_url
+        client.logo = uploaded_pic_url
+
         client.save()
 
         response = {
@@ -158,7 +159,7 @@ def addAdmin(request):
         profile_pic = request.FILES.get('profile_pic', None)
         if profile_pic:
             fs = FileSystemStorage(location="media/profile-pics", base_url="profile-pics/")
-            picname = fs.save(profile_pic.name, profile_pic)
+            picname = fs.save("user_"+str(user[0].id)+"_pic_"+profile_pic.name, profile_pic)
             uploaded_pic_url = fs.url(picname)
         else:
             uploaded_pic_url = None
@@ -276,47 +277,90 @@ def editInformation(request):
     if request.method == "POST":
         image1, image2, image3, image4, image5, image6 = [None] * 6
         uploaded_pic_url1, uploaded_pic_url2, uploaded_pic_url3, uploaded_pic_url4, uploaded_pic_url5, uploaded_pic_url6 = [None] * 6
-        try:
-            image1 = request.FILES['image1']
-            image2 = request.FILES['image2']
-            image3 = request.FILES['image3']
-            image4 = request.FILES['image4']
-            image5 = request.FILES['image5']
-            image6 = request.FILES['image6']
 
-            fs = FileSystemStorage(location="media/homepage-pics", base_url="homepage-pics/")
-            picname1 = fs.save(image1.name, image1)
-            picname2 = fs.save(image2.name, image2)
-            picname3 = fs.save(image3.name, image3)
-            picname4 = fs.save(image4.name, image4)
-            picname5 = fs.save(image5.name, image5)
-            picname6 = fs.save(image6.name, image6)
+        image1 = request.FILES.get('image1', None)
+        image2 = request.FILES.get('image2', None)
+        image3 = request.FILES.get('image3', None)
+        image4 = request.FILES.get('image4', None)
+        image5 = request.FILES.get('image5', None)
+        image6 = request.FILES.get('image6', None)
 
-            uploaded_pic_url1 = fs.url(picname1)
-            uploaded_pic_url2 = fs.url(picname2)
-            uploaded_pic_url3 = fs.url(picname3)
-            uploaded_pic_url4 = fs.url(picname4)
-            uploaded_pic_url5 = fs.url(picname5)
-            uploaded_pic_url6 = fs.url(picname6)
-        except Exception as e:
-            pass
+        fs = FileSystemStorage(location="media/homepage-pics", base_url="homepage-pics/")
+        if image1:
+            picname = fs.save("homepage_image1_pic_"+image1.name, image1)
+            uploaded_pic_url1 = fs.url(picname)
+        else:
+            uploaded_pic_url1 = None
+        
+        if image2:
+            picname = fs.save("homepage_image2_pic_"+image2.name, image2)
+            uploaded_pic_url2 = fs.url(picname)
+        else:
+            uploaded_pic_url2= None
+        
+        if image3:
+            picname = fs.save("homepage_image3_pic_"+image3.name, image3)
+            uploaded_pic_url3 = fs.url(picname)
+        else:
+            uploaded_pic_url3 = None
 
+        if image4:
+            picname = fs.save("homepage_image4_pic_"+image4.name, image4)
+            uploaded_pic_url4 = fs.url(picname)
+        else:
+            uploaded_pic_url4 = None
+
+        if image5:
+            picname = fs.save("homepage_image5_pic_"+image5.name, image5)
+            uploaded_pic_url5 = fs.url(picname)
+        else:
+            uploaded_pic_url5 = None
+
+        if image6:
+            picname = fs.save("homepage_image6_pic_"+image6.name, image6)
+            uploaded_pic_url6 = fs.url(picname)
+        else:
+            uploaded_pic_url6 = None
+        
         try:
             superadmin = SuperAdministratorInformation.objects.filter(id=1)[0]
             superadmin.email = request.POST["email"]
             superadmin.tel = request.POST["tel"]
 
             if image1:
-                superadmin.image1 = uploaded_pic_url1
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image1_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image1_pic_"+image1.name, image1)
+                superadmin.image1 = fs.url(picname)
+
             if image2:
-                superadmin.image2 = uploaded_pic_url2
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image2_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image2_pic_"+image2.name, image2)
+                superadmin.image2 = fs.url(picname)
+
             if image3:
-                superadmin.image3 = uploaded_pic_url3
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image3_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image3_pic_"+image3.name, image3)
+                superadmin.image3 = fs.url(picname)
+
             if image4:
-                superadmin.image4 = uploaded_pic_url4
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image4_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image4_pic_"+image4.name, image4)
+                superadmin.image4 = fs.url(picname)
+
             if image5:
-                superadmin.image5 = uploaded_pic_url5
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image5_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image5_pic_"+image5.name, image5)
+                superadmin.image5 = fs.url(picname)
+
             if image6:
+                for filename in glob.glob(settings.MEDIA_ROOT+"/homepage-pics/homepage_image6_pic_*"):
+                    os.remove(filename)
+                picname = fs.save("homepage_image6_pic_"+image6.name, image6)
                 superadmin.image6 = uploaded_pic_url6
 
             superadmin.save()

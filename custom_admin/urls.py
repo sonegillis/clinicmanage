@@ -28,7 +28,7 @@ from .views import (
 from mainapp.views import changePassword
 
 from django.contrib import admin
-####
+
 urlpatterns = [
     url(r'^$', homePage, name="home"),
     url(r'^worker-change-password/(?P<worker_id>\d+)/$', changeWorkerPassword, name="worker-change-password"),
