@@ -39,10 +39,10 @@
                     {% csrf_token %}
                     <button id="pdf-download" class="btn btn-primary notika-btn-info">PDF</button>
                 </div>
-                <!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                     {% csrf_token %}
-                    <button class="btn btn-success notika-btn-info">EXCEL</button>
-                </div> -->
+                    <button id="excel-download" onclick="downloadExcel()" class="btn btn-primary notika-btn-info">EXCEL</button>
+                </div>
             </div>
         </div>
         <p></p>
@@ -77,7 +77,11 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/xlsx.full.min.js' %}"></script>
     <script type="text/javascript">
+        clinic_stats_xcel = [];
+        rows_xcel = [];
+        cols_xcel = [];
         $(document).ready(function() {
             var start, start_date;
             var end, end_date;
@@ -167,7 +171,15 @@
                         },
                         success         :  function(data, textStatus, jqXHR){
                                             var columns = data.columns;
+                                            clinic_stats_xcel.push(columns);
                                             var rows = data.rows;
+                                            for (var i = 0; i < rows.length; i++) {
+                                                clinic_stats_xcel.push(rows[i]);
+                                            }
+                                            for (var i = 0; i < columns.length; i++) {
+                                                cols_xcel.push({wch: 40}, {wch: 50}, {wch: 4}, {wch: 5}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 50}, {wch: 50}, {wch: 50}, {wch: 50}, {wch: 50}, {wch: 100}, {wch: 100}, {wch: 100}, {wch: 100})
+                                                rows_xcel.push({hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40}, {hpx: 40})
+                                            }
                                             doc.autoTable(columns, rows,{
                                                 "startY": 450,
                                                 styles: {
@@ -204,5 +216,52 @@
             var string = doc.output('datauristring');
             $('iframe').attr('src', string);
         });
+        
+        function downloadExcel() {
+            filename = "LOGBOOK.xlsx";
+            // var checked_boxes = $('.select_drug:checkbox:checked');
+            // order.push(["Drug", "Quantity"]);
+            // checked_boxes.each(function(){
+            //     var array = [];
+            //     array.push($(this).val());
+            //     array.push($(this).closest('tr').find("td:eq(3)").find("input").val());
+            //     order.push(array);
+            //     cols.push({wch: 50}, {wch: 20});
+            //     rows.push({hpx: 40}, {hpx: 40});
+            // });                      
+
+            var ub = XLSX.utils.book_new();
+            ub.Props = {
+                Title: "Title",
+                Subject: "Subject",
+                Author: "Author",
+            };
+
+            var wscols = cols_xcel;
+
+            var wsrows = rows_xcel;
+
+            ub.SheetNames.push("Test Sheet");
+            var ws_data = clinic_stats_xcel;
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            ws['!cols'] = wscols;
+
+            ws['!rows'] = wsrows;
+
+            ub.Sheets["Test Sheet"] = ws;
+
+            var wbout = XLSX.write(ub, {bookType: "xlsx", type: "binary"});
+
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+
+            saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), filename); 
+ 
+        }
     </script>
 {% endblock %}

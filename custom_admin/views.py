@@ -1536,8 +1536,7 @@ def clinicStatistics(request):
                         sub_row[11] += (labtest_detail.labtest_name + "(" + labtest_detail.labtest_result + ")")
 
             rows.append(sub_row)
-
-        response = json.dumps({"columns" : columns,"rows" : rows}, indent=4, default=str)
+        response = json.dumps({"columns" : columns, "rows" : rows}, indent=4, default=str)
         return HttpResponse(response)
 
 def calculate_age(bday, d=None):
