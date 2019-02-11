@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::placeholder {
+    opacity: 0;
+}
+
+body {
+    background-color: beige;
+}
+
+header {
+    background-color: #66bb6a;
+    width: 100%;
+    height: 80px;
+}
+
+#contact-us {
+    width: 80%;
+    margin: 20px auto 0 auto;
+    text-align: center;
+
+}
+
+.nav-inline {
+    display: inline-block;
+}
+
+.div-center {
+    width: 30%;
+    text-align: center;
+}
+
+.div-center i {
+    margin: 20px 0;
+}
+
+label{
+    padding: 5px 0;
+    color: white;
+    font-size: 12px;
+    font-family: 'Merriweather', serif;
+}
+
+#logo {
+    /* float: left; */
+    color: white;
+    padding-top: 15px;
+    padding-left: 40px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: 40px;
+    letter-spacing: 0.2em;
+}
+
+.input {
+    width: 180px;
+    height: 30px;
+    border: 0 solid skyblue;
+    padding: 4px 4px;
+    font-family: 'Hind', sans-serif;
+}
+
+.input-label {
+    display: block;
+}
+
+.login {
+    margin-left: 20%;
+}
+
+button[type="submit"] {
+    width: 120px;
+    height: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    margin-top: 10px;
+    background-color: #338a3e;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #66bb6a;
+}
+
+.grid {
+    display: grid;
+    width: 90%;
+    height: 100%;
+    grid-template: 2fr 1fr / 1fr 1fr;
+    grid-gap: 10px 10px;
+    margin: 20px auto;
+}
+
+.information {
+    margin-top: 100px;
+    margin-bottom: auto;
+    text-align: center;
+}
+
+.information h1 {
+    padding-bottom: 50px;
+}
+
+.information p {
+    color: #338a3e;
+    font-size: 18px;
+}
+
+#mail-us {
+    text-decoration: none;
+    color: #338a3e
+}
+
+#mail-us:hover {
+    color: black;
+}
+
+#call-us {
+    color: #338a3e;
+}
+
+.contact {
+    grid-column: 1 / span 2;
+    width: 100%;
+}
+
+.contact p {
+    width: 60%;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 15px;
+    line-height: 1.5;
+    padding-top: 20px;
+}
+
+.img-fluid {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+@media only screen and (max-width: 1100px) {
+    .login {
+        margin-left: 0;
+    }
+
+    .information {
+        margin-top:60px;
+    }
+
+    .img-slider {
+        width: 90%;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .call-us, .email-us {
+        text-align: center;
+    }
+
+}
+
+@media only screen and (max-width: 860px) {
+    ::placeholder {
+        opacity: 0.4;
+    }
+
+    .img-slider {
+        width: 90%;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .bxslider {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid black;
+    }
+
+    header {
+        height: 200px;
+    }
+
+    .grid {
+        display: block;
+    }
+
+    nav {
+        width: 100%;
+    }
+
+    #logo {
+        /* float: left; */
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+        width: 80%;
+        margin: 0 auto;
+        font-size: 30px;
+    }
+
+    .nav-inline {
+        display: block;
+    }
+
+    .login {
+        width: 100%;
+        text-align: cneter;
+    }
+
+    .input-label {
+        display: inline-block
+    }
+
+    .input {
+        height: 30px;
+        border: 0 solid skyblue;
+        padding: 4px 4px;
+        font-family: 'Hind', sans-serif;
+        width: 100%;
+    }
+
+    .center-container {
+        width: 60%;
+        margin: 5px auto;
+    }
+
+    .label {
+        display: none;
+    }
+
+    button[type="submit"] {
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    .contact-us{
+        width: 100%;
+    }
+
+    .div-center {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .call-us, .email-us {
+        text-align: center;
+    }
+
+}

@@ -34,7 +34,7 @@ def homePage(request):
         if designation == "cashier":
             return HttpResponseRedirect(reverse("cashier:invoice"))
 
-    template_name = "homepage.html"
+    template_name = "index.html"
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']

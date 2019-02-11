@@ -1,0 +1,123 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Dimebookd</title>
+        <link href="https://fonts.googleapis.com/css?family=Hind|Merriweather" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.15/jquery.bxslider.min.css" rel="stylesheet" /> 
+        <link href="{% static 'css/homepage-style.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'css/fontawesome-all.min.css' %}" type="text/css" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <header>
+            <nav>
+                <h1 class="nav-inline" id="logo">DIMEBOOK</h1>
+                <form class="nav-inline login" method="POST">
+                    <div class="nav-inline center-container">
+                        <label class="label input-label" for="username">Username </label>
+                        <input class="input input-label" type="text" name="username" id="username" placeholder="Username">  
+                    </div>
+                    <div class="nav-inline center-container">
+                        <label class="label input-label" for="password">Password </label>
+                        <input  class="input-label input" type="password" name="password" id="password" placeholder="password">
+                    </div>
+                    {% csrf_token %}
+                    <button type="submit" class="nav-inline">Log In</button>
+                </form>       
+            </nav>
+        </header>
+        <div class="grid">
+            <section class="box img-slider">
+                <ul class="bxslider">
+                    <li>
+                        {% if superadmin.image1 %}
+                        <img class="img-fluid" src="{{superadmin.image1.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if superadmin.image2 %}
+                        <img class="img-fluid" src="{{superadmin.image2.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if superadmin.image3 %}
+                        <img class="img-fluid" src="{{superadmin.image3.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if superadmin.image4 %}
+                        <img class="img-fluid" src="{{superadmin.image4.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if superadmin.image5 %}
+                        <img class="img-fluid" src="{{superadmin.image5.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if superadmin.image6 %}
+                        <img class="img-fluid" src="{{superadmin.image6.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid" src="" alt="">
+                        {% endif %}
+                    </li>
+                </ul>
+            </section>
+
+            <section class="box information">
+                <h1>MEDICAL RECORD SYSTEM</h1>
+                <p>
+                    Digital version of the traditional paper-based
+                    medical record for an individual. Represents a medical record within a single
+                    facility, such as a doctor's office or a clinic
+                </p>
+            </section>
+
+            <section class="box contact">
+                <p>Ready to revolutionarise your health care system? 
+                    That's great! Give us a call or send us an email and
+                    we will get back to you as soon as possible!
+                </p>
+                <div id="contact-us">
+                    <div class="nav-inline div-center">
+                        <i class="fas fa-phone fa-3x"></i>
+                        <p id="call-us">{{superadmin.tel}}</p>
+                    </div>
+                    <div class="nav-inline div-center">
+                        <i class="fas fa-envelope fa-3x"></i>
+                        <p>
+                            <a id="mail-us" href="mailto:your-email@your-domain.com">{{superadmin.email}}</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.15/jquery.bxslider.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('.bxslider').bxSlider({
+                    auto: true,
+                    stopAutoOnClick: true,
+                    pager: true,
+                    slideWidth: 600,
+                    preloadImages: 'all'
+                });
+            });
+        </script>
+    </body>
+    
+</html>
