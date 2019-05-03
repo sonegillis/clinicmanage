@@ -50,4 +50,4 @@ A web application called **Dimebook** that manages the medical and financial act
 
 
 ## Contributors
-   1. Mekolle Sone Gillis ( [LinkedIn](www.linkedin.com/in/mekolle-sone-gillis-ekeh-junior-7180bb162), [github](https://github.com/sonegillis/) )
+   1. Mekolle Sone Gillis ( [LinkedIn](https://www.linkedin.com/in/mekolle-sone-gillis-ekeh-junior-7180bb162), [github](https://github.com/sonegillis/) )
